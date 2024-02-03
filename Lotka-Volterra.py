@@ -2,16 +2,16 @@ import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
 
-M0 = 100  #雄性数量
-F0 = 100  #雌性数量
-P0 = 1000  #猎物数量
+M0 = 20  #雄性数量
+F0 = 20  #雌性数量
+P0 = 300  #猎物数量
 
-b_m = 0.07
-b_f = 0.03
-a = 0.01
-r_m=0.1
-r_f=0.1
-r_p=0.5
+b_m = 0.2
+b_f = 0.2
+a = 0.2
+r_m=0.5
+r_f=0.5
+r_p=0.75
 
 def derivative(t,X):
     M,F,P = X
@@ -22,7 +22,7 @@ def derivative(t,X):
 
 
 Nt = 1000
-tmax = 50
+tmax = 200
 t = np.linspace(0.,tmax,Nt)
 X0 = [M0,F0,P0]
 res = integrate.solve_ivp(derivative,(0,tmax),X0,t_eval=t)
