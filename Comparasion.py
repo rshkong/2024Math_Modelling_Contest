@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import parameters
 
 
+
 M0 = parameters.M0  #雄性数量
 F0 = parameters.F0  #雌性数量
 P0 = parameters.P0  #猎物数量
@@ -45,6 +46,13 @@ def deri_nosex(t,X):
 def B(M,F,P):
     return b_m*a*P*min([M,F])
 
+
+def moving_average(x,w):
+    temp=np.convolve(x, np.ones(w), 'valid') / w
+    res=np.concatenate((temp,temp[-w:-1]))
+    return res
+
+
 Nt = 10000
 tmax = 30
 t = np.linspace(0.,tmax,Nt)
@@ -52,10 +60,8 @@ X0 = [M0,F0,P0]
 res = integrate.solve_ivp(derivative,(0,tmax),X0,t_eval=t)
 M,F,P = res.y
 
-def moving_average(x,w):
-    temp=np.convolve(x, np.ones(w), 'valid') / w
-    res=np.concatenate((temp,temp[-w:-1]))
-    return res
+res_nosex = integrate.solve_ivp(deri_nosex,(0,tmax),X0,t_eval=t)
+M_nosex,F_nosex,P_nosex = res_nosex.y
 
 
 plt.figure(1)
@@ -75,4 +81,18 @@ plt.figure(2)
 plt.grid()
 plt.plot(t,M/(M+F),'r')
 plt.title("sex ratio",fontsize=15)
+
+plt.figure(3)
+plt.grid()
+plt.title("Lotka-Volterra_Nosex",fontsize=15)
+plt.plot(t,M_nosex,"b",label = "Male")
+plt.plot(t,M_nosex,'r',label="Female")
+plt.plot(t,P_nosex,'y',label="Prey")
+plt.plot(t,moving_average(M,2000),"b--",label="Male moving average")
+plt.plot(t,moving_average(P,2000),"y--",label="Prey moving average")
+plt.plot
+plt.xlabel('time',fontsize=15)
+plt.ylabel("population",fontsize=15)
+plt.legend()
+
 plt.show()
